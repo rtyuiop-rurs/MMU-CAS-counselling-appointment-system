@@ -3,7 +3,7 @@ body {
     font-size: small;
     margin: 0;
     padding: 0;
-    background-image: url(images/white-simple-textured-design-background.jpg);
+    background-image: url(/images/white-simple-textured-design-background.jpg);
 }
 .header {
     text-align: center;
