@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discussion Forum</title>
+    <style>
+        body {
+            background-color: #002f6c;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            flex-direction: column;
+        }
+        .container {
+            background-color: white;
+            width: 800px;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h2 {
+            margin-bottom: 15px;
+            font-size: 20px;
+            color: black;
+        }
+        input, textarea {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        textarea {
+            height: 100px;
+            resize: none;
+        }
+        .btn {
+            background-color: black;
+            color: white;
+            width: 95%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            background-color: #444;
+        }
+        .switch-btn {
+            background-color: #ccc;
+            color: black;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>DISCUSSION FORUM</h2>
+        <form>
+            <input type="text" placeholder="Title..." required>
+            <textarea placeholder="Anything in mind?" required></textarea>
+            <button type="submit" class="btn">SUBMIT</button>
+        </form>
+        <button class="btn switch-btn" onclick="window.location.href='homepage.html'">Back</button>
+    </div>
+</body>
+</html>
