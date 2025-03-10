@@ -4,6 +4,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    background-image: url(https://img.freepik.com/premium-photo/fluid-organic-white-color-abstract-background-unique-designs_851755-380518.jpg?semt=ais_hybrid);
 }
 
 .container {
