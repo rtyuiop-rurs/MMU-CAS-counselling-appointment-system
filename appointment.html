@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Booking</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e0f2ff;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background: #0d47a1;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            margin: 0;
+        }
+        .nav {
+            display: flex;
+            gap: 20px;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .nav a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80vh;
+        }
+        .appointment-box {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            width: 500px;
+        }
+        h2 {
+            text-align: center;
+        }
+        input, textarea, button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #d32f2f;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #b71c1c;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>MMU</h1>
+        <div class="nav">
+            <a href="#">HOME</a>
+            <a href="#">DASHBOARD</a>
+            <a href="#">NOTIFICATION</a>
+            <a href="#" style="text-decoration: underline;">APPOINTMENT</a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="appointment-box">
+            <h2>Make an Appointment</h2>
+            <form action="#" method="post">
+                <input type="text" name="firstname" placeholder="First Name" required>
+                <input type="text" name="lastname" placeholder="Last Name" required>
+                <input type="text" name="contact" placeholder="Contact" required>
+                <textarea name="reason" placeholder="Why?" required></textarea>
+                <input type="date" name="date" required>
+                <input type="time" name="time" required>
+                <button type="submit">SUBMIT</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
