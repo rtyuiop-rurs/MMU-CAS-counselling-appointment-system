@@ -1,0 +1,212 @@
+/* General Body Styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9fafb;
+    margin: 0;
+    padding: 0;
+}
+
+/* Dashboard Container */
+.dashboard-container {
+    max-width: 900px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Header Styling */
+header h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #333;
+}
+
+/* Notice Section Styling */
+.notice {
+    background: #f0f8ff;
+    padding: 15px;
+    border-left: 4px solid #007bff;
+    margin: 20px 0;
+    text-align: left;
+    border-radius: 8px;
+}
+
+.notice h2 {
+    margin: 0 0 10px;
+    font-size: 18px;
+    color: #333;
+}
+
+.notice p {
+    margin: 0;
+    font-size: 14px;
+    color: #555;
+}
+
+/* User Info and Notification Cards */
+.student-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Ensure proper alignment */
+    gap: 20px; /* Add space between the boxes */
+    margin: 30px 0; /* Add margin to separate this section from others */
+}
+
+.card {
+    flex: 1;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    min-height: 100px; /* Ensure consistent height for all cards */
+}
+
+.card.notification {
+    text-align: left;
+}
+
+.card p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.card h3 {
+    margin-top: 0;
+    font-size: 16px;
+    color: #007bff;
+}
+
+/* Action Grid Styling */
+.action-grid {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px; /* Add spacing between the action cards */
+    margin: 30px 0;
+}
+
+.action-card {
+    flex: 1;
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.action-card img {
+    max-width: 60px;
+    margin-bottom: 10px;
+}
+
+.action-card p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.action-card a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+.action-card a:hover {
+    text-decoration: underline;
+}
+
+/* Footer Styling */
+footer {
+    margin-top: 20px;
+}
+
+footer button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+footer button:hover {
+    background-color: #0056b3;
+}
+/* --- Notification Preview Card Styles --- */
+
+.notification-preview {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border: 1px solid #e9ecef;
+}
+
+.notification-preview h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+/* This will hold the dynamically generated list */
+#notificationPreviewList {
+    margin-bottom: 16px;
+}
+
+/* Styling for each item within the preview list */
+.preview-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f3f5;
+    text-decoration: none;
+    color: inherit;
+}
+.preview-item:last-child {
+    border-bottom: none;
+}
+.preview-item.unread .message {
+    font-weight: bold;
+    color: #212529;
+}
+
+.preview-item .icon {
+    font-size: 1.2rem;
+    margin-right: 12px;
+}
+
+.preview-item .content {
+    flex-grow: 1;
+}
+
+.preview-item .message {
+    display: block;
+    font-size: 0.9rem;
+    color: #495057;
+}
+
+.preview-item .timestamp {
+    display: block;
+    font-size: 0.75rem;
+    color: #6c757d;
+}
+
+.see-all-link {
+    display: block;
+    text-align: center;
+    padding: 8px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #007bff;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.see-all-link:hover {
+    background-color: #e9ecef;
+}

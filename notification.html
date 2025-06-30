@@ -3,113 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Appointment Notifications</title>
+    <title>Your Notifications - MMU CAS</title>
+    <!-- Link to a shared stylesheet or create a new one -->
+    <link rel="stylesheet" href="dashboard.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #e0f2ff;
-            margin: 0;
-            padding: 0;
+        .notifications-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        .header {
-            background: #0d47a1;
-            color: white;
-            padding: 15px 20px;
+        .notification-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 15px;
         }
-        .header h1 {
-            margin: 0;
+        .notification-item:last-child {
+            border-bottom: none;
         }
-        .nav {
-            display: flex;
-            gap: 20px;
+        .notification-item:hover {
+            background-color: #f9f9f9;
         }
-        .nav a {
-            color: white;
-            text-decoration: none;
+        .notification-item.unread {
+            background-color: #e8f0fe;
             font-weight: bold;
         }
-        .nav a:hover {
+        .notification-item .icon {
+            font-size: 24px;
+            color: #007bff;
+        }
+        .notification-item .content .timestamp {
+            font-size: 0.8em;
+            color: #777;
+            font-weight: normal;
+            margin-top: 5px;
+        }
+        .notification-item .content .message {
+            font-size: 0.95em;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+        .back-link:hover {
             text-decoration: underline;
         }
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 20px;
-        }
-        .notification-box {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-            width: 500px;
-            margin-bottom: 15px;
-        }
-        .notification-box h3 {
-            margin: 0 0 10px;
-        }
-        .buttons {
-            display: flex;
-            justify-content: space-between;
-        }
-        .approve {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .approve:hover {
-            background-color: #388E3C;
-        }
-        .decline {
-            background-color: #d32f2f;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .decline:hover {
-            background-color: #b71c1c;
-        }
+        .notification-item .actions {
+    margin-left: auto; /* Pushes buttons to the right */
+    display: flex;
+    gap: 10px;
+}
+
+.notification-item .actions button {
+    background: none;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 0.8em;
+    transition: background-color 0.2s;
+}
+
+.notification-item .actions button.delete-btn:hover {
+    background-color: #f8d7da; /* Light red */
+    color: #721c24;
+}
+
+.notification-item .actions button.read-btn:hover {
+    background-color: #d4edda; /* Light green */
+    color: #155724;
+}
+#deleteAllBtn.danger {
+    background-color: #dc3545; /* A standard red color */
+    color: white;
+    border-color: #dc3545;
+}
+#deleteAllBtn.danger:hover {
+    background-color: #c82333;
+}
     </style>
-    <script>
-        function approveAppointment(studentName, date, time) {
-            alert(studentName + "'s appointment has been approved.\nMeeting Scheduled on: " + date + " at " + time);
-        }
-        function declineAppointment(studentName) {
-            alert(studentName + "'s appointment has been declined. The meeting will be rescheduled.");
-        }
-    </script>
 </head>
 <body>
-    <div class="header">
-        <h1>MMU</h1>
-        <div class="nav">
-            <a href="#">HOME</a>
-            <a href="#">DASHBOARD</a>
-            <a href="#" style="text-decoration: underline;">NOTIFICATION</a>
-            <a href="#">APPOINTMENT</a>
+    <div class="notifications-container">
+        <a href="javascript:history.back()" class="back-link">&larr; Back to Dashboard</a>
+        <h1>Your Notifications</h1>
+        <div id="notificationsList">
+            <p>Loading notifications...</p>
         </div>
+         <div id="notificationActions">
+    <button id="markAllReadBtn">Mark All as Read</button>
+    <!-- Add this new button -->
+    <button id="deleteAllBtn" class="danger">Delete All Notifications</button>
+</div>
     </div>
-    <div class="container">
-        <h2>Appointment Requests</h2>
-        <div class="notification-box">
-            <h3>John Doe requested an appointment</h3>
-            <p><strong>Contact:</strong> johndoe@email.com</p>
-            <p><strong>Reason:</strong> Need academic counseling</p>
-            <p><strong>Date:</strong> 2025-03-20</p>
-            <p><strong>Time:</strong> 10:00 AM</p>
-            <div class="buttons">
-                <button class="approve" onclick="approveAppointment('John Doe', '2025-03-20', '10:00 AM')">Approve</button>
-                <button class="decline" onclick="declineAppointment('John Doe')">Decline</button>
-            </div>
-        </div>
-    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    
+    <!-- Your new notifications script -->
+    <script src="notifications.js"></script>
 </body>
 </html>

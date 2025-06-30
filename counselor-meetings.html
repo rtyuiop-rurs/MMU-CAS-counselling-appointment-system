@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Counselor – Availability & Appointments</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <link rel="stylesheet" href="counselor-meetings.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🧑‍🏫 Hello, <span id="cName"></span></h1>
+
+    <h2>Weekly Availability <span style="font-size:0.9em; color:#aaa;">(Monday - Friday)</span></h2>
+    <div class="day-selector">
+      <div class="day-tabs">
+        <div class="day-tab active" data-day="monday">Monday</div>
+        <div class="day-tab" data-day="tuesday">Tuesday</div>
+        <div class="day-tab" data-day="wednesday">Wednesday</div>
+        <div class="day-tab" data-day="thursday">Thursday</div>
+        <div class="day-tab" data-day="friday">Friday</div>
+      </div>
+      <div class="form-group">
+        <label>Available Time Slots <span style="color:#888;">(click to block/unblock)</span></label>
+        <div id="weeklySlots"></div>
+      </div>
+      <button id="saveWeeklyAvail">Save Weekly Availability</button>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <h2>Daily Adjustments <span style="font-size:0.9em; color:#aaa;">(Monday - Friday)</span></h2>
+    <p style="font-size: 1em; color: #5a5a5a;">Make emergency changes to specific weekdays below.</p>
+    <div class="form-group">
+      <label for="availDate">Date</label>
+      <input type="date" id="availDate">
+    </div>
+    <div class="emergency-toggle">
+      <label>
+        <input type="checkbox" id="emergencyToggle">
+        <span>This is an <b>Emergency</b> (Overrides weekly schedule and blocks one specific day)</span>
+      </label>
+
+      <div id="emergencyBlockContainer" style="display: none; margin-top: 10px;">
+        <p style="font-size: 0.97em; color: #d9534f;">
+          Toggling emergency mode will block one specific day.
+        </p>
+        <button id="saveEmergencyBlockBtn" class="danger">Confirm: Block Entire Day</button>
+      </div>
+      <div id="allSlots" class="slots-container"></div>
+      <button id="saveDailyAvail">Save Daily Changes</button>
+      <button id="resetDailyAvail" class="danger">Reset Day to Weekly Schedule</button>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <h2>Pending Requests</h2>
+    <div id="pendingList"></div>
+
+    <div id="rescheduleForm">
+      <h3>Reschedule Appointment</h3>
+      <div class="form-group">
+        <label for="resDate">New Date <span style="font-size:0.95em; color:#888;">(Monday - Friday)</span></label>
+        <select id="resDate"></select>
+      </div>
+      <div class="form-group">
+        <label for="resTime">New Time</label>
+        <select id="resTime"></select>
+      </div>
+      <button id="saveReschedule" class="reschedule">Save</button>
+      <button id="cancelReschedule">Cancel</button>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <h2>Your Schedule</h2>
+    <div id="scheduleList"></div>
+  </div>
+
+  <script src="counselor-meetings.js"></script>
+</body>
+</html>

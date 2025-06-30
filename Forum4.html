@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student-Counselor Forum</title>
+  <link rel="stylesheet" href="forum4.css"> <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-messaging-compat.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1 style="text-align: center; color: var(--primary-color);">Student-Counselor Forum</h1>
+
+    <div id="loginSection" class="login-section" style="display: none; text-align: center; padding: 20px;">
+      <h2>Access Forum</h2>
+      <p>You need to be logged in to create posts and participate fully.</p>
+      <p>
+        <a href="login-page.html" class="primary button-like" style="text-decoration:none; padding:10px 15px; background-color:var(--primary-color); color:white; border-radius:5px; display: inline-block; margin-top:10px;">
+          Login or Register
+        </a>
+      </p>
+    </div>
+
+    <div id="logoutSection" style="display: none; text-align: center; margin-bottom: 20px; padding: 10px; border: 1px solid #eee; border-radius: 5px;">
+      <p style="margin-bottom: 10px;">Welcome, <strong id="loggedInUser">User</strong>! (Role: <span id="userRole">N/A</span>)</p>
+      <button onclick="handleLogout()" class="danger" style="margin-right: 10px;">Logout</button>
+      <button onclick="redirectToDashboard()" class="dashboard-button">Dashboard</button>
+    </div>
+
+    <div id="postForm" style="display: none; margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+      <h2>Create New Request</h2>
+      <input type="text" id="postTitle" placeholder="Issue Title" style="width: 100%; margin-bottom: 10px; padding: 8px;">
+      <textarea id="postContent" placeholder="Describe your issue..." rows="4" style="width: 100%; margin-bottom: 10px; padding: 8px;"></textarea>
+      <div class="toggle-wrapper" style="margin-bottom: 10px; display: flex; align-items: center;">
+        <label class="toggle-switch" style="margin-right: 10px;">
+          <input type="checkbox" id="publicToggle">
+          <span class="slider"></span> </label>
+        <label for="publicToggle" class="toggle-label">Make this post public</label>
+      </div>
+      <button onclick="createPost()" class="primary">Submit Request</button>
+    </div>
+
+    <hr class="section-divider" style="margin-bottom: 20px;">
+
+    <div id="postsContainerWrapper">
+      <h2 style="text-align: center;">Forum Posts</h2>
+      <div id="postsContainer">
+          <p id="loadingPostsMsg" style="text-align:center; color: #777;">Loading posts...</p>
+      </div>
+    </div>
+  </div>
+  
+  <script src="forum4.js"></script>
+</body>
+</html>
