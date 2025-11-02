@@ -145,18 +145,9 @@ The system integrates with EmailJS for:
 - Safari 13+
 - Edge 80+
 
-## 🤝 Contributing
-
-Please read the contributing guidelines before submitting pull requests or issues.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🆘 Support
-
-For technical support or questions about the system, please contact the MMU IT department or refer to the system documentation.
-
----
+This project is licensed under MMU
 
 **Note**: This system is designed specifically for Multimedia University's counseling department and follows their operational workflows and privacy requirements.
