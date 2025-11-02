@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - MMU Counselling Appointment</title>
-    <link rel="stylesheet" href="registration.css">
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <link rel="stylesheet" href="registration.css"> <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
 </head>
@@ -32,7 +31,7 @@
     <script>
         // Firebase configuration
         const firebaseConfig = {
-            apiKey: "AIzaSyCugT4PA8Krc2kSUSZLjEE-TVJRyVKOxAE",
+            apiKey: "AIzaSyCugT4PA8Krc2kSUSZLjEE-TVJRyVKOxAE", 
             authDomain: "mmu-cas.firebaseapp.com",
             projectId: "mmu-cas",
             storageBucket: "mmu-cas.appspot.com",
@@ -42,7 +41,7 @@
         };
 
         // Initialize Firebase
-        if (!firebase.apps.length) {
+        if (!firebase.apps.length) { 
             firebase.initializeApp(firebaseConfig);
         }
         const auth = firebase.auth();
@@ -60,20 +59,22 @@ registerForm.addEventListener("submit", async function(event) {
     successMessage.style.display = "none";
 
     const fullName = document.getElementById("fullName").value.trim();
-    const email = emailInput.value.trim();
+    const email = emailInput.value.trim(); // Make sure emailInput is defined
     const username = document.getElementById("username").value.trim();
     const password = document.getElementById("password").value.trim();
     const idNumber = document.getElementById("idNumber").value.trim();
-    let role = "";
+    let student = "";
 
-    // Determine role based on email format
-    if (email.toLowerCase().endsWith("@student.mmu.edu.my")) {
-        role = "student";
-    } else {
-        role = "counselor";
-    }
+// const isStudentEmailFormat = email.toLowerCase().includes("@student.");
+// if (isStudentEmailFormat) {
+//     determinedRole = "student";
+// } else {
+//     determinedRole = "counselor";
+// }
 
-    console.log("Determined role:", role);
+// For testing, assign a role directly. 
+student = "student"; // Or "counselor"
+console.warn("WARNING: MMU-specific email check is temporarily bypassed for testing. Role forced to:", student);
 
     try {
         // 1. Create auth user
@@ -95,14 +96,14 @@ registerForm.addEventListener("submit", async function(event) {
             fullName,
             email, 
             username,
-            role: role, // Use the determined role
+            role: student,
             idNumber,
-            emailVerified: false, // Initialize as false
+            emailVerified: true, // Initialize as true
             createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         console.log("User document created in Firestore for UID:", user.uid);
 
-        successMessage.textContent = `Successfully Registered as a ${role}! A verification email has been sent to ${user.email}. Please check your inbox (and spam folder) and verify your email before logging in.`;
+        successMessage.textContent = `Successfully Registered as a ${student}! A verification email has been sent to ${user.email}. Please check your inbox (and spam folder) and verify your email before logging in.`;
         successMessage.style.display = "block";
         registerForm.reset();
 
@@ -111,13 +112,20 @@ registerForm.addEventListener("submit", async function(event) {
         await auth.signOut();
         console.log("User signed out after registration, pending verification.");
 
+        // Redirect to login page after a delay, or just let them see the message.
+        // setTimeout(() => {
+        //     window.location.href = "login-page.html";
+        // }, 5000); // Give time to read the message
+
     } catch (error) {
         console.error("Registration error:", error);
+        // Ensure getRegisterErrorMessage handles 'auth/email-already-in-use', etc.
         errorMessageDisplay.textContent = getRegisterErrorMessage(error.code || error.message); 
         successMessage.style.display = "none";
     }
 });
 
+// Ensure getRegisterErrorMessage function is defined as you have it
 function getRegisterErrorMessage(code) {
     switch (code) {
         case 'auth/email-already-in-use':
@@ -131,11 +139,8 @@ function getRegisterErrorMessage(code) {
     }
 }
 
-clearFieldsButton.addEventListener("click", function() {
-    registerForm.reset();
-    errorMessageDisplay.textContent = "";
-    successMessage.style.display = "none";
-});
+// const clearFieldsButton = document.getElementById("clearFieldsButton");
+// clearFieldsButton.addEventListener("click", function() { ... }); // Your existing clear log
 
     </script>
 </body>

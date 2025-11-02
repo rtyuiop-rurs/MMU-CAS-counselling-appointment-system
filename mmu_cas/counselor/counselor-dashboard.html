@@ -148,7 +148,8 @@
         } else {
             // No user is signed in according to Firebase
             // console.log("Counselor Page: No Firebase user. Redirecting to login."); // For debugging
-            sessionStorage.removeItem("currentUser"); 
+            // alert("Please login to access the counselor dashboard."); // Can be a bit intrusive if it shows on every redirect
+            sessionStorage.removeItem("currentUser"); // Ensure session is cleared
             window.location.href = "login-page.html";
         }
     });
