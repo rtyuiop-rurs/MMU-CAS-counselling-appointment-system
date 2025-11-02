@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student CAS Homepage</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <style>
+        /* Styling for Name and ID only */
+        .student-info .card:first-child p {
+            font-size: 15px; /* Larger text size */
+            font-weight: bold; /* Bold text */
+        }
+    </style>
+     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header>
+            <h1>Student CAS Homepage</h1>
+        </header>
+        <section class="notice">
+            <h2>Important Notice</h2>
+            <p><strong>Please be aware of meeting date and </strong><br>If you find an error saying email not verified, please refresh the page.</p>
+        </section>
+        <section class="student-info">
+            <div class="card">
+                <p><strong>Name:</strong> <span id="studentName"></span></p>
+                <p><strong>ID:</strong> <span id="studentId"></span></p>
+            </div>
+           <div class="card notification-preview">
+                <h3>Latest Notifications</h3>
+                <div id="notificationPreviewList"></div>
+                <a href="notification.html" class="see-all-link">View all notifications &rarr;</a>
+            </div>
+        </section>
+        <section class="action-grid">
+            <div class="action-card">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/54/Apple_Clock_icon.svg" alt="Clock Icon" style="width: 50px;">
+                <p><a href="student-meetings.html">Discuss with counselor and pick time and date for meeting</a></p>
+            </div>
+            <div class="action-card">
+                <img src="https://www.svgrepo.com/show/326193/forum.svg" alt="Forum Icon" style="width: 50px;">
+                <p><a href="forum4.html">Check out forums for guidance</a></p>
+            </div>
+        </section>
+        <footer>
+            <button id="logoutButton">Logout</button>
+        </footer>
+    </div>
+<script>
+    // Firebase configuration 
+    const firebaseConfig = {
+        apiKey: "AIzaSyCugT4PA8Krc2kSUSZLjEE-TVJRyVKOxAE", // Keep your actual API key
+        authDomain: "mmu-cas.firebaseapp.com",
+        projectId: "mmu-cas",
+        storageBucket: "mmu-cas.appspot.com",
+        messagingSenderId: "814309169546",
+        appId: "1:814309169546:web:dc514a74b6d07675145073",
+        measurementId: "G-YHFGZ85W8H"
+    };
+
+    
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
+    const db = firebase.firestore(); // Initialize Firestore if you need to fetch fresh data
+
+ 
+    // Logout handler
+    const logoutButton = document.getElementById("logoutButton");
+    // console.log("Counselor Page: Logout button element:", logoutButton); // For debugging
+
+    if (logoutButton) {
+        logoutButton.addEventListener("click", () => {
+            // console.log("Counselor Page: Logout button clicked!"); // For debugging
+            // console.log("Counselor Page: Auth object at time of logout click:", auth); // For debugging
+
+            if (auth) {
+                auth.signOut().then(() => {
+                    console.log("Counselor sign-out successful");
+                    sessionStorage.removeItem("currentUser"); // Clear session data
+                    window.location.href = "login-page.html"; // Redirect to login
+                }).catch((error) => {
+                    console.error("Counselor sign-out error:", error);
+                    alert("Error signing out: " + error.message);
+                });
+            } else {
+                console.error("Counselor Page: Auth object is NOT available for logout.");
+                alert("An error occurred (auth not available). Please try refreshing.");
+            }
+        });
+    } else {
+        console.error("Counselor Page: Logout button not found in the DOM.");
+    }
+
+   
+    auth.onAuthStateChanged(async (user) => {
+    if (user) {
+        let userData = JSON.parse(sessionStorage.getItem("currentUser"));
+
+        if (userData && userData.uid === user.uid) {
+            if (userData.role === "student") {
+                // This part attempts to populate from sessionStorage first
+                document.getElementById("studentName").textContent = userData.fullName || userData.username || "N/A";
+                document.getElementById("studentId").textContent = userData.idNumber || "N/A"; // Corrected DOM ID and property from sessionStorage
+
+                // Then it tries to populate from Firestore (and overwrites the above, which is good for fresh data)
+                const userDoc = await db.collection("users").doc(user.uid).get();
+                if (userDoc.exists) {
+                    const freshUserData = userDoc.data();
+                    console.log("Fetched from Firestore:", freshUserData); // For debugging
+
+                    // Corrected lines for displaying name and ID:
+                    document.getElementById("studentName").textContent = freshUserData.fullName || "N/A";
+                    document.getElementById("studentId").textContent = freshUserData.idNumber || "N/A"; // Corrected DOM ID and Firestore property
+
+                    // Update sessionStorage with the potentially fresher data from Firestore
+                    // Ensure all necessary fields are included here from freshUserData
+                    sessionStorage.setItem("currentUser", JSON.stringify({
+                        uid: user.uid,
+                        email: freshUserData.email,
+                        fullName: freshUserData.fullName,
+                        username: freshUserData.username,
+                        role: freshUserData.role,
+                        idNumber: freshUserData.idNumber // Ensure this matches Firestore structure
+                        // Add any other fields you stored and need in sessionStorage
+                    }));
+                } else {
+                    console.error("User document not found in Firestore. UID:", user.uid);
+                    alert("User data missing. Logging out.");
+                    auth.signOut();
+                }
+            } else {
+                alert("Access denied. You are not registered as a student.");
+                window.location.href = "login-page.html";
+            }
+        } else {
+            console.warn("Session storage data missing or inconsistent. Redirecting to login.");
+            // alert("Your session is invalid or has expired. Please login again."); // This alert might be too aggressive if page just loaded
+            if(user) await auth.signOut(); // Sign out Firebase session if it exists but sessionStorage is bad
+            window.location.href = "login-page.html";
+        }
+    } else {
+        sessionStorage.removeItem("currentUser");
+        window.location.href = "login-page.html";
+    }
+});
+</script>
+</body>
+</html>

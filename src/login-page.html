@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="login-page.css"> <!-- Make sure this path is correct -->
+    <title>Login - MMU Counselling Appointment</title>
+
+    <!-- Firebase SDKs - These MUST be loaded first -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Your Firebase configuration object
+        const firebaseConfig = {
+            apiKey: "AIzaSyCugT4PA8Krc2kSUSZLjEE-TVJRyVKOxAE", // Your actual API key
+            authDomain: "mmu-cas.firebaseapp.com",
+            projectId: "mmu-cas",
+            storageBucket: "mmu-cas.appspot.com",
+            messagingSenderId: "814309169546",
+            appId: "1:814309169546:web:dc514a74b6d07675145073",
+            measurementId: "G-YHFGZ85W8H"
+        };
+
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+                console.log("Firebase initialized successfully on login-page.html <head>");
+            } else {
+                console.log("Firebase already initialized (login-page.html <head>).");
+            }
+        } catch (e) {
+            console.error("FATAL: Error initializing Firebase in <head>:", e);
+            // Alert or display a critical error if Firebase can't even initialize
+            // document.body.innerHTML = "<h1>Critical Firebase Initialization Error. Please contact support.</h1>";
+        }
+    </script>
+    <style>
+        /* Basic styling for the resend button if you don't have it in login-page.css */
+        #resendVerificationBtn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+        #resendVerificationBtn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <img src="https://logowik.com/content/uploads/images/mmu-multimedia-university6129.jpg" alt="MMU Logo">
+        <h1>MMU Counselling Appointment</h1> <!-- Or "MMU COUNSELING APPOINTMENT SYSTEM (CAS)" -->
+        <h2>Login</h2>
+        <form id="loginForm">
+            <input id="email" type="email" placeholder="Enter Email" required />
+            <input id="password" type="password" placeholder="Enter Password" required />
+            <button type="submit">Login</button>
+        </form>
+        <p class="error-message" id="errorMessage" style="display: none;"></p>
+        <a href="forgot-password.html">Forgot Password?</a>
+        <a href="registration-page.html">Don't have an account? Register</a>
+    </div>
+
+    <script>
+        // This script runs after the DOM is ready and Firebase should have been initialized
+        let auth;
+        let db;
+
+        // Check if the global 'firebase' object exists and services can be accessed
+        if (typeof firebase !== 'undefined' && firebase.auth && firebase.firestore) {
+            try {
+                auth = firebase.auth();
+                db = firebase.firestore();
+                console.log("Login Script: Firebase auth and firestore services accessed.");
+            } catch (e) {
+                console.error("Login Script: Error accessing Firebase auth or firestore services:", e);
+                const errorMsgEl = document.getElementById("errorMessage");
+                if (errorMsgEl) {
+                    errorMsgEl.textContent = "Critical error: Could not connect to Firebase services. Please refresh or contact support.";
+                    errorMsgEl.style.display = 'block';
+                } else {
+                    alert("Critical error: Could not connect to Firebase services. Please refresh or contact support.");
+                }
+                // Disable login form if services aren't up
+                const loginFormToDisable = document.getElementById("loginForm");
+                if (loginFormToDisable) loginFormToDisable.style.display = 'none';
+            }
+        } else {
+            console.error("Login Script FATAL: Firebase SDK not fully loaded or initialized. Global 'firebase' object or services missing.");
+            const errorMsgEl = document.getElementById("errorMessage");
+             if (errorMsgEl) {
+                errorMsgEl.textContent = "Critical error: Firebase core library not loaded. The application cannot start. Please contact support.";
+                errorMsgEl.style.display = 'block';
+            } else {
+                alert("Critical error: Firebase core library not loaded. The application cannot start. Please contact support.");
+            }
+            const loginFormToDisable = document.getElementById("loginForm");
+            if (loginFormToDisable) loginFormToDisable.style.display = 'none';
+        }
+
+        const loginForm = document.getElementById("loginForm");
+        const errorMessageElement = document.getElementById("errorMessage");
+
+        if (loginForm && errorMessageElement && auth && db) { // Only proceed if essential elements and Firebase services are ready
+            loginForm.addEventListener("submit", async (event) => {
+                event.preventDefault();
+                errorMessageElement.textContent = "";
+                errorMessageElement.style.display = 'none';
+
+                const emailInput = document.getElementById("email");
+                const passwordInput = document.getElementById("password");
+
+                if (!emailInput || !passwordInput) {
+                    console.error("Email or password input field not found in the DOM.");
+                    errorMessageElement.textContent = "Login form error. Please refresh.";
+                    errorMessageElement.style.display = 'block';
+                    return;
+                }
+
+                const email = emailInput.value.trim();
+                const password = passwordInput.value.trim();
+
+                if (!email || !password) {
+                    errorMessageElement.textContent = "Please enter both email and password.";
+                    errorMessageElement.style.display = 'block';
+                    return;
+                }
+
+                try {
+                    const userCredential = await auth.signInWithEmailAndPassword(email, password);
+                    const user = userCredential.user;
+                    console.log("Login attempt successful for:", user.email);
+
+                    if (!user.emailVerified) {
+                        console.warn("Login denied: Email not verified for", user.email);
+                        errorMessageElement.innerHTML = `Your email address is not verified. Please check your inbox (and spam folder) for the verification link. <br><button type="button" id="resendVerificationBtn" style="margin-top: 10px; padding: 5px 10px; cursor:pointer;">Resend Verification Email</button>`;
+                        errorMessageElement.style.display = 'block';
+                        
+                        const resendBtn = document.getElementById('resendVerificationBtn');
+                        if(resendBtn) {
+                            resendBtn.onclick = async () => {
+                                try {
+                                    resendBtn.disabled = true;
+                                    resendBtn.textContent = "Sending...";
+                                    await user.sendEmailVerification();
+                                    alert("Verification email sent again. Please check your inbox.");
+                                    resendBtn.textContent = "Sent!";
+                                } catch (e) {
+                                    console.error("Error resending verification email:", e);
+                                    alert("Failed to resend verification email. Please try again later.");
+                                    resendBtn.disabled = false;
+                                    resendBtn.textContent = "Resend Verification Email";
+                                }
+                            };
+                        }
+                        if (auth.currentUser) await auth.signOut();
+                        return; 
+                    }
+
+                    console.log("Email verified for:", user.email);
+                    const userDoc = await db.collection("users").doc(user.uid).get();
+
+                    if (userDoc.exists) {
+                        const userData = userDoc.data();
+
+                        if (userData.emailVerified === false || typeof userData.emailVerified === 'undefined') {
+                            try {
+                                await db.collection("users").doc(user.uid).update({ emailVerified: true });
+                                console.log("Updated emailVerified to true in Firestore for user:", user.uid);
+                            } catch (updateError) {
+                                console.error("Error updating emailVerified in Firestore:", updateError);
+                            }
+                        }
+
+                        sessionStorage.setItem("currentUser", JSON.stringify({
+                            uid: user.uid,
+                            email: user.email,
+                            emailVerified: true,
+                            ...userData
+                        }));
+                        console.log("User data stored in sessionStorage, redirecting...");
+
+                        switch (userData.role) {
+                            case "student": window.location.href = "student-dashboard.html"; break;
+                            case "counselor": window.location.href = "counselor-dashboard.html"; break;
+                            case "admin": window.location.href = "admin-dashboard.html"; break;
+                            default:
+                                console.warn("Unknown role, redirecting to login:", userData.role);
+                                errorMessageElement.textContent = "Login successful, but role is undefined. Please contact support.";
+                                errorMessageElement.style.display = 'block';
+                                if (auth.currentUser) await auth.signOut();
+                        }
+                    } else {
+                        console.error("User data not found in Firestore for UID:", user.uid);
+                        errorMessageElement.textContent = "Login successful, but user profile data not found. Please contact support.";
+                        errorMessageElement.style.display = 'block';
+                        if (auth.currentUser) await auth.signOut();
+                    }
+                } catch (error) {
+                    console.error("Login error:", error);
+                    errorMessageElement.textContent = getLoginErrorMessage(error.code || error.message);
+                    errorMessageElement.style.display = 'block';
+                }
+            });
+        } else {
+            console.error("FATAL: loginForm or errorMessage element not found, or Firebase services not ready. Login functionality will not work.");
+            if (document.getElementById("loginForm") && !auth && !db) { // If form exists but Firebase is down
+                 const errorMsgElForNoFirebase = document.getElementById("errorMessage");
+                 if(errorMsgElForNoFirebase) {
+                    errorMsgElForNoFirebase.textContent = "Cannot connect to login services. Please try again later.";
+                    errorMsgElForNoFirebase.style.display = 'block';
+                 }
+            }
+        }
+
+        function getLoginErrorMessage(code) {
+            // ... (your getLoginErrorMessage function) ...
+            switch (code) {
+                case 'auth/user-not-found':
+                case 'auth/invalid-credential':
+                    return "Invalid email or password.";
+                case 'auth/wrong-password':
+                    return "Incorrect password.";
+                case 'auth/invalid-email':
+                    return "Invalid email format.";
+                case 'auth/too-many-requests':
+                    return "Access to this account has been temporarily disabled due to many failed login attempts. You can immediately restore it by resetting your password or you can try again later.";
+                case 'auth/user-disabled':
+                    return "This user account has been disabled.";
+                default:
+                    return `Login failed (${code}). Please try again or contact support.`;
+            }
+        }
+
+        // onAuthStateChanged listener for auto-redirect if already logged in and verified
+        if (auth) {
+            auth.onAuthStateChanged(async (user) => {
+                if (user && user.emailVerified) {
+                    // Only redirect if currently on the login page to avoid loops if something fails on dashboard
+                    if (window.location.pathname.endsWith('login-page.html') || window.location.pathname.endsWith('login.html') || window.location.pathname === '/') {
+                        console.log("Login page (onAuthStateChanged): User logged in and verified, attempting redirect...");
+                        const sessionUserStr = sessionStorage.getItem('currentUser');
+                        let sessionUser;
+                        if (sessionUserStr) {
+                            try { sessionUser = JSON.parse(sessionUserStr); } catch (e) { console.error("Error parsing session user", e); }
+                        }
+
+                        if (sessionUser && sessionUser.uid === user.uid && sessionUser.emailVerified && sessionUser.role) {
+                            console.log("Redirecting based on session role:", sessionUser.role);
+                            switch (sessionUser.role) {
+                                case "student": window.location.href = "student-dashboard.html"; break;
+                                case "counselor": window.location.href = "counselor-dashboard.html"; break;
+                                case "admin": window.location.href = "admin-dashboard.html"; break;
+                                default: console.log("Unknown session role, not redirecting."); break;
+                            }
+                        } else if (db) { // If no valid session, fetch fresh from DB
+                            try {
+                                const userDoc = await db.collection("users").doc(user.uid).get();
+                                if (userDoc.exists) {
+                                    const userData = userDoc.data();
+                                    sessionStorage.setItem("currentUser", JSON.stringify({ uid: user.uid, email: user.email, emailVerified: true, ...userData }));
+                                    console.log("Redirecting based on Firestore role:", userData.role);
+                                    switch (userData.role) {
+                                        case "student": window.location.href = "student-dashboard.html"; break;
+                                        case "counselor": window.location.href = "counselor-dashboard.html"; break;
+                                        case "admin": window.location.href = "admin-dashboard.html"; break;
+                                        default: console.log("Unknown Firestore role, not redirecting."); break;
+                                    }
+                                } else {
+                                    console.warn("Login page (onAuthStateChanged): User doc not found in Firestore for verified user. Staying on login page.");
+                                }
+                            } catch (error) {
+                                console.error("Error fetching user data in onAuthStateChanged for redirect:", error);
+                            }
+                        }
+                    }
+                } else if (user && !user.emailVerified) {
+                     console.log("Login page (onAuthStateChanged): User authenticated but email not verified. Login form will handle messaging.");
+                }
+            });
+        }
+    </script>
+</body>
+</html>
