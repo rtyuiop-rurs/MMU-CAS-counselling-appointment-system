@@ -10,7 +10,7 @@ const firebaseConfig = {
 };
 const emailjsConfig = {
     publicKey: "_G7jjBj34V12n_BnL",
-    serviceId: "service_osgdwmr",
+    serviceId: "service_v9uq5pn",
     newRequestTemplateId: "template_7l3255g"
 };
 
